@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Corrida de Ursinhos</title>
+</head>
+<style>
+    .pista { 
+        display: inline-block;
+        width: 100%;
+        background-color: #ae4b37;
+        height: 180px;
+    }
+    .pista > .faixa {
+        border-bottom: 1px solid white;
+        padding-top: 15px;
+        padding-bottom: 8px;
+    }
+
+    .chegada { 
+        display: inline-block;
+        height: 180px;
+        width: 15px;
+        border: 1px solid black;
+        background-image: 
+        repeating-linear-gradient(to bottom, black 0, black 20px, transparent 20px, transparent 40px),
+        repeating-linear-gradient(to right, #fff 0, #fff 20px, black 20px, black 40px);
+        position: absolute;
+        top: 8px;
+        right: 80px;
+    }
+
+    button {
+        display: block;
+        margin-top: 10px;
+    }
+</style>
+
+<body>
+    <div class="pista" id="pista">   
+    
+    </div>
+    <div class="chegada" id="chegada"></div>
+
+    <button onclick="animar()" >COMEÇAR!!!</button>
+    <button onclick="adicionaUrso()">Adicionar Urso</button>
+    
+    <script>
+
+        var ursos = [
+        {
+            id: 0, 
+            margin: 10,
+            nome: "Ted"
+        },
+        {
+            id: 1, 
+            margin: 10,
+            nome: "Oscar"
+        },
+        {
+            id: 2, 
+            margin: 10,
+            nome: "Marieta"
+        }
+    ];
+
+    function montaUrso(urso) {
+    return `<div class="faixa">
+                <img src="urso1.png" id="urso${urso.id}">
+            </div>`
+    }
+
+        //FUNÇÃO PRINCIPAL PARA ANIMAÇÃO DOS URSOS CORREDORES
+        function animar() {
+            for(let i = 1; i<4; i++) {
+                setTimeout(function(){
+                //ANIMAÇÃO CORREDOR 1
+                    ursos.forEach(function(urso) {
+                        corredor = document.getElementById("urso" + urso.id);
+                        corredor.setAttribute("src", "urso" + i + ".png");
+                        urso.margin = urso.margin + randomizaVelocidade();
+                        corredor.style.marginLeft = urso.margin + "px";
+                        verificaVencedor(urso);
+                    });                
+
+                    if(i == 3) 
+                        animar();
+
+                }, i*100);
+            }
+        }
+
+        function verificaVencedor(urso) {
+
+            if(urso.margin >= 1800) {
+                alert(urso.id + " venceu a corrida!");
+                ursos.forEach(function(urso) {
+                    urso.margin = 0;
+                });
+            }
+        }
+
+        //FUNÇÃO QUE RANDOMIZA A VELOCIDADE DE CADA URSO
+        function randomizaVelocidade(){
+            var velocidade = Math.floor(Math.random()*10);
+            return velocidade;
+        }
+
+
+        function prepararUrsos() {
+            ursoHTML = "";
+            ursos.forEach(function(urso) {
+                ursoHTML = ursoHTML + montaUrso(urso);
+            });
+            document.getElementById("pista").style.height = (60*ursos.length) + "px";
+            document.getElementById("chegada").style.height = (60*ursos.length) + "px";
+
+            document.getElementById("pista").innerHTML = ursoHTML;
+        }
+
+        function adicionaUrso() {
+            ursos.push({
+                id: ursos.length + 1,
+                nome: "Denis",
+                margin: 10
+            });
+
+            prepararUrsos();
+        }
+
+        prepararUrsos();
+    </script>
+    
+</body>
+</html>
